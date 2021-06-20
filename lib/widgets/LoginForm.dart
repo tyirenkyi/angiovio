@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:angiovio/views/SignUp.dart';
+
 class LoginForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -29,7 +31,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 30, right: 30, top: 40),
+      padding: EdgeInsets.only(left: 20, right: 20, top: 40),
       child: Column(
         children: [
           Form(
@@ -177,7 +179,9 @@ class _LoginFormState extends State<LoginForm> {
                       )),
                       minimumSize: MaterialStateProperty.all(Size(400, 45))
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, SignUp.routeName);
+                    },
                     child: Text(
                       'Sign Up',
                       style: TextStyle(
