@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../views/Home.dart';
+
 class SignUpForm extends StatefulWidget {
   @override
   _SignUpFormState createState() => _SignUpFormState();
@@ -35,7 +37,9 @@ class _SignUpFormState extends State<SignUpForm> {
 
   _saveForm() async {}
 
-  handleSignUp() async{}
+  handleSignUp() async{
+    Navigator.pushReplacementNamed(context, Home.routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +310,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         'Sign Up',
                         style: TextStyle(fontSize: 18),
                       ),
-                      onPressed: () {},
+                      onPressed: handleSignUp,
                       style: ButtonStyle(
                           minimumSize: MaterialStateProperty.all(Size(400, 45))
                       ),

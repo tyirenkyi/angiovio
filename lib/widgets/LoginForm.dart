@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:angiovio/views/SignUp.dart';
+import '../views/SignUp.dart';
+import '../views/Home.dart';
+
 
 class LoginForm extends StatefulWidget {
   @override
@@ -19,7 +21,9 @@ class _LoginFormState extends State<LoginForm> {
 
   void _saveForm() {}
 
-  void handleSignIn() {}
+  void handleSignIn() {
+    Navigator.pushReplacementNamed(context, Home.routeName);
+  }
 
   @override
   void dispose() {

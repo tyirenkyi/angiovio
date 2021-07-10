@@ -1,3 +1,4 @@
+import 'package:angiovio/views/Settings.dart';
 import 'package:flutter/material.dart';
 
 import 'Dashboard.dart';
@@ -13,10 +14,13 @@ class _HomeState extends State<Home> {
   int routeIndex = 0;
   List<Widget> _routes = [
     Dashboard(),
+    Settings(),
   ];
 
   void _onTabItemTapped(int index) {
-    routeIndex = index;
+    setState(() {
+      routeIndex = index;
+    });
   }
 
   @override
@@ -51,6 +55,7 @@ class _HomeState extends State<Home> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {},
+          backgroundColor: Color.fromRGBO(21, 101, 192, 1),
         ),
       ),
     );
