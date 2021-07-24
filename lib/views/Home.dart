@@ -140,11 +140,11 @@ class _HomeState extends State<Home> {
           selectedItemColor: Theme.of(context).accentColor,
           onTap: _onTabItemTapped,
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: routeIndex == 0 ?FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: _showAddDrug,
           backgroundColor: Color.fromRGBO(21, 101, 192, 1),
-        ),
+        ) : null,
       ),
     );
   }
