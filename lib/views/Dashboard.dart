@@ -1,12 +1,32 @@
 import 'package:angiovio/widgets/DrugItem.dart';
 import 'package:flutter/material.dart';
 
+import '../utils.dart';
+
 class Dashboard extends StatefulWidget {
   @override
   _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
+  String _greeting = '';
+  String _date = '';
+
+  void loadGreetingAndDate() {
+    String date = getDate();
+    String greeting = determineGreeting();
+    setState(() {
+      _greeting = greeting;
+      _date = date;
+    });
+  }
+
+  @override
+  void initState() {
+    loadGreetingAndDate();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -17,14 +37,14 @@ class _DashboardState extends State<Dashboard> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              'Wednesday, 12 July',
+              _date,
               style: TextStyle(
                 color: Colors.grey
               ),
             ),
             Padding(padding: EdgeInsets.only(bottom: 5),),
             Text(
-              'Good Morning',
+              _greeting,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold
