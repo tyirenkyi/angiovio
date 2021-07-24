@@ -1,6 +1,7 @@
-import 'package:angiovio/views/Settings.dart';
 import 'package:flutter/material.dart';
 
+
+import 'Settings.dart';
 import 'Dashboard.dart';
 
 class Home extends StatefulWidget {
