@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../views/Home.dart';
+import '../services.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -16,10 +16,11 @@ class _SignUpFormState extends State<SignUpForm> {
   final _passwordController = TextEditingController();
   final _form = GlobalKey<FormState>();
   Map<String, String> _authData = {
-    'name': '',
+    'displayName': '',
     'email': '',
-    'phone': '',
-    'password': ''
+    'phoneNumber': '',
+    'password': '',
+
   };
   bool loading = false;
 
@@ -31,14 +32,53 @@ class _SignUpFormState extends State<SignUpForm> {
     _passwordFocusNode.dispose();
     _phoneFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
-    _passwordFocusNode.dispose();
     super.dispose();
   }
-
-  _saveForm() async {}
-
+  
   handleSignUp() async{
-    Navigator.pushReplacementNamed(context, Home.routeName);
+    if(_form.currentState!.validate()) {
+      _form.currentState!.save();
+      setState(() {
+        loading = true;
+      });
+      try {
+        await AuthService().signUp(form: _authData);
+        setState(() {
+          loading = false;
+        });
+        showSuccessSnackBar();
+      } catch(e) {
+        setState(() {
+          loading = false;
+        });
+        showErrorSnackBar();
+      }
+    }
+  }
+  
+  showErrorSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('An unexpected error occurred. Please try again later'),
+        backgroundColor: Colors.redAccent,)
+    );
+  }
+
+  showSuccessSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Your account has been created successfully.'),
+        backgroundColor: Colors.green,
+        action: SnackBarAction(
+            label: 'Login',
+            onPressed: openLogin
+        ),
+      )
+    );
+  }
+
+  openLogin() {
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   @override
@@ -92,7 +132,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         },
                         onSaved: (value) {
                           value = value!.trim();
-                          _authData['name'] = value;
+                          _authData['displayName'] = value;
                         },
                       ),
                     )
@@ -190,7 +230,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         },
                         onSaved: (value) {
                           value = value!.trim();
-                          _authData['phone'] = value;
+                          _authData['phoneNumber'] = value;
                         },
                       ),
                     )
@@ -290,7 +330,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         },
                         cursorColor: Color.fromRGBO(167, 192, 205, 1),
                         onFieldSubmitted: (_) {
-                          _saveForm();
+                          handleSignUp();
                         },
                       ),
                     )
