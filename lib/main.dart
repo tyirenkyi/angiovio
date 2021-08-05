@@ -1,29 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 //screens
 import 'views/Login.dart';
 import 'views/SignUp.dart';
 import 'views/Home.dart';
+import 'views/Error.dart';
+import 'views/Loading.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        accentColor: Colors.black
-      ),
-      home: Login(),
-      routes: {
-        SignUp.routeName: (context) => SignUp(),
-        Login.routeName: (context) => Login(),
-        Home.routeName: (context) => Home(),
-      },
+    return FutureBuilder(
+      future: _initialization,
+      builder: (context, snapshot) {
+        if(snapshot.hasError) {
+          return MaterialApp(home: Error());
+        }
+        if(snapshot.connectionState == ConnectionState.done) {
+          return MaterialApp(
+            title: 'Angiovio',
+            theme: ThemeData(
+                primarySwatch: Colors.blue,
+                accentColor: Colors.black
+            ),
+            home: Login(),
+            routes: {
+              SignUp.routeName: (context) => SignUp(),
+              Login.routeName: (context) => Login(),
+              Home.routeName: (context) => Home(),
+            },
+          );
+        }
+        return MaterialApp(home: Loading());
+      }
     );
   }
 }

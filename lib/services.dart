@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 Map<String, String> headers = {
   'Content-Type': 'application/json;charset=UTF-8',
@@ -10,6 +11,8 @@ Map<String, String> headers = {
 
 
 class AuthService {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   Future signUp({
     required Map<String, String> form
   }) async {
@@ -22,6 +25,18 @@ class AuthService {
     } catch(e) {
       print(e);
       throw e;
+    }
+  }
+
+  Future signIn({
+    required Map<String, String> form
+  }) async {
+    User user;
+    try {
+      user = (await _firebaseAuth.signInWithEmailAndPassword(email: form['email']!, password: form['password']!)).user!;
+      return 'SUCCESS';
+    } on FirebaseAuthException catch(e) {
+      return e.code;
     }
   }
   

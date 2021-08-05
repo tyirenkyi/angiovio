@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "992163627039",
+    "project_id": "angiovio-78201",
+    "storage_bucket": "angiovio-78201.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992163627039:android:47e6947a335866cbfe152a",
+        "android_client_info": {
+          "package_name": "com.example.angiovio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992163627039-foh7hf44to0lvkuq1cbb65bd957ufigv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUv1qPSPs2Etwu3gmHiuxc4cSR9QI38NY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992163627039-foh7hf44to0lvkuq1cbb65bd957ufigv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

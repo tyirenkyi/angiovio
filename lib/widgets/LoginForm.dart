@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:angiovio/services.dart';
 import 'package:flutter/material.dart';
 
 import '../views/SignUp.dart';
@@ -19,10 +22,53 @@ class _LoginFormState extends State<LoginForm> {
   };
   bool loading = false;
 
-  void _saveForm() {}
+  _saveForm() async {
+    final value = _form.currentState!.validate();
+    if(!value)
+      return false;
+    _form.currentState!.save();
+    return true;
+  }
 
-  void handleSignIn() {
-    Navigator.pushReplacementNamed(context, Home.routeName);
+  showLoadingIndicator() {
+    setState(() {
+      loading = true;
+    });
+  }
+
+  hideLoadingIndicator() {
+    setState(() {
+      loading = false;
+    });
+  }
+
+  showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.redAccent,)
+    );
+  }
+
+  void handleSignIn() async{
+    var formStatus = await _saveForm();
+    if(!formStatus)
+      return;
+    showLoadingIndicator();
+    AuthService _authService = new AuthService();
+    var signInStatus = await _authService.signIn(form: _authData);
+    if(signInStatus == 'wrong-password' || signInStatus == 'user-not-found') {
+      hideLoadingIndicator();
+      showErrorSnackBar('Please check your email/password and try again');
+      return;
+    }else if(signInStatus == 'SUCCESS') {
+      hideLoadingIndicator();
+      Timer(Duration(milliseconds: 200), () {
+        Navigator.pushReplacementNamed(context, Home.routeName);
+      });
+    }else {
+      hideLoadingIndicator();
+      print(signInStatus);
+      showErrorSnackBar("Couldn't authenticate you. Please try again later");
+    }
   }
 
   @override
@@ -136,7 +182,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 20)),
                 if(loading)
-                  CircularProgressIndicator()
+                  LinearProgressIndicator()
                 else
                   ButtonTheme(
                     shape: RoundedRectangleBorder(
