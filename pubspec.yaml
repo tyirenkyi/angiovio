@@ -16,7 +16,7 @@ dependencies:
   intl: ^0.17.0
   http: ^0.13.3
   firebase_auth: ^3.0.1
-  firebase: ^9.0.1
+  firebase_core: ^1.4.0
 
 dev_dependencies:
   flutter_test:

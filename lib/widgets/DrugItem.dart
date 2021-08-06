@@ -11,7 +11,12 @@ class DrugItem extends StatelessWidget {
         onTap();
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+        padding: EdgeInsets.only(top: 10, bottom: 20, left: 10, right: 10),
+        margin: EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.all(Radius.circular(4))
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -24,7 +29,7 @@ class DrugItem extends StatelessWidget {
                   child: Text(
                     'Losartan',
                     style: TextStyle(
-                      color: Color.fromRGBO(33, 33, 33, 1),
+                      color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
                     ),
@@ -35,7 +40,7 @@ class DrugItem extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.timer_rounded, color: Color.fromRGBO(61, 61, 61, 1)),
+                      child: Icon(Icons.timer_rounded, color: Colors.white),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 15),
@@ -43,13 +48,13 @@ class DrugItem extends StatelessWidget {
                         '19:00',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: Color.fromRGBO(61, 61, 61, 1)
+                          color: Colors.grey
                         ),
                       ),
                     ),  //next dosage
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.dynamic_feed, color: Color.fromRGBO(61, 61, 61, 1)),
+                      child: Icon(Icons.dynamic_feed, color: Colors.white),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 15),
@@ -57,19 +62,19 @@ class DrugItem extends StatelessWidget {
                         'daily',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: Color.fromRGBO(61, 61, 61, 1)
+                          color: Colors.grey
                         ),
                       ),
                     ), //dosage interval
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.medication, color: Color.fromRGBO(61, 61, 61, 1)),
+                      child: Icon(Icons.medication, color: Colors.white),
                     ),
                     Text(
                       '2.5mg',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: Color.fromRGBO(61, 61, 61, 1)
+                        color: Colors.grey
                       ),
                     )
                   ],

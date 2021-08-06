@@ -174,7 +174,7 @@ class _LoginFormState extends State<LoginForm> {
                           _authData['password'] = value!;
                         },
                         onFieldSubmitted: (_) {
-                          _saveForm();
+                          handleSignIn();
                         },
                       ),
                     )
@@ -202,21 +202,6 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ),
                   ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(EdgeInsets.all(2)),
-                          textStyle: MaterialStateProperty.all(TextStyle(
-                              fontWeight: FontWeight.w500
-                          ))
-                      ),
-                      onPressed: () {},
-                      child: Text('Forgot Password'),
-                    ),
-                  ],
-                ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 15)),
                 ButtonTheme(
                   shape: RoundedRectangleBorder(

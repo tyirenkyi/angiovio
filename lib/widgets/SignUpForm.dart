@@ -368,7 +368,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         )),
                         minimumSize: MaterialStateProperty.all(Size(400, 45))
                     ),
-                    onPressed: () {},
+                    onPressed: openLogin,
                     child: Text(
                       'Login',
                       style: TextStyle(

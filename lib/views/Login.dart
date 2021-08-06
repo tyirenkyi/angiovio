@@ -14,6 +14,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(33, 33, 33, 1),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.only(top: 80),

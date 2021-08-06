@@ -13,9 +13,10 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(33, 33, 33, 1),
         body: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.only(top: 80),
+            padding: EdgeInsets.only(top: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
