@@ -1,7 +1,8 @@
-import 'package:angiovio/widgets/DrugItem.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../utils.dart';
+import '../widgets/DrugItem.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   String _greeting = '';
   String _date = '';
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   void loadGreetingAndDate() {
     String date = getDate();
@@ -206,7 +208,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             Text(
-              'Jim',
+              '${_firebaseAuth.currentUser?.displayName}',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
