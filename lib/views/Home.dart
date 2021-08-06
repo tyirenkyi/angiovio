@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 
@@ -60,99 +62,102 @@ class _HomeState extends State<Home> {
 
   Widget _buildAddDrugBottomSheet(StateSetter setState) {
     double screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-      height: screenHeight * 0.8,
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(33, 33, 33, 1)
-      ),
-      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Add A Drug',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 15)),
-            TextFormField(
-              style: TextStyle(
-                color: Colors.white
-              ),
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelText: 'Name',
-                labelStyle: TextStyle(
-                  fontSize: 16,
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+      child: Container(
+        height: screenHeight * 0.8,
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(33, 33, 33, 1)
+        ),
+        padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add A Drug',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                   color: Colors.white
                 ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.white
-                  )
-                )
               ),
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 15)),
-            TextFormField(
-              style: TextStyle(
-                color: Colors.white
-              ),
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelText: 'Dosage (mg)',
-                labelStyle: TextStyle(
-                  fontSize: 16,
+              Padding(padding: EdgeInsets.only(bottom: 15)),
+              TextFormField(
+                style: TextStyle(
                   color: Colors.white
                 ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: TextStyle(
+                    fontSize: 16,
                     color: Colors.white
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white
+                    )
                   )
-                )
+                ),
               ),
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 25)),
-            Text('Interval', style: TextStyle(fontSize: 16, color: Colors.white),),
-            DropdownButton<int>(
-              icon: Icon(Icons.arrow_drop_down),
-              value: interval,
-              iconSize: 20,
-              elevation: 5,
-              style: TextStyle(color: Colors.white),
-              underline: Container(
-                height: 2,
-                color: Colors.blue,
-              ),
-              onChanged: (int? newValue) {
-                setState(() {
-                  interval = newValue!;
-                });
-              },
-              items: <int>[0, 6, 8, 12, 24]
-                .map<DropdownMenuItem<int>>((int value) => (
-                  DropdownMenuItem<int>(
-                    value: value,
-                    child: Text('$value hours', style: TextStyle(color: Colors.grey),)
+              Padding(padding: EdgeInsets.only(bottom: 15)),
+              TextFormField(
+                style: TextStyle(
+                  color: Colors.white
+                ),
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Dosage (mg)',
+                  labelStyle: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white
+                    )
                   )
-              )).toList(),
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 60)),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                'ADD',
-                style: TextStyle(fontSize: 18),
+                ),
               ),
-              style: ButtonStyle(
-                minimumSize: MaterialStateProperty.all(Size(400, 45))
+              Padding(padding: EdgeInsets.only(bottom: 25)),
+              Text('Interval', style: TextStyle(fontSize: 16, color: Colors.white),),
+              DropdownButton<int>(
+                icon: Icon(Icons.arrow_drop_down),
+                value: interval,
+                iconSize: 20,
+                elevation: 5,
+                style: TextStyle(color: Colors.white),
+                underline: Container(
+                  height: 2,
+                  color: Colors.blue,
+                ),
+                onChanged: (int? newValue) {
+                  setState(() {
+                    interval = newValue!;
+                  });
+                },
+                items: <int>[0, 6, 8, 12, 24]
+                  .map<DropdownMenuItem<int>>((int value) => (
+                    DropdownMenuItem<int>(
+                      value: value,
+                      child: Text('$value hours', style: TextStyle(color: Colors.grey),)
+                    )
+                )).toList(),
               ),
-            )
-          ],
+              Padding(padding: EdgeInsets.only(bottom: 60)),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text(
+                  'ADD',
+                  style: TextStyle(fontSize: 18),
+                ),
+                style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.all(Size(400, 45))
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

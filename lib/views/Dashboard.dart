@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -46,138 +48,141 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _buildDrugDetailBottomSheet() {
     double screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-      height: screenHeight * 0.8,
-      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(33, 33, 33, 1)
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: Text(
-                'Losartan',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+      child: Container(
+        height: screenHeight * 0.8,
+        padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(33, 33, 33, 1)
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Text(
+                  'Losartan',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(right: 10),
-                  child: Icon(Icons.timer_rounded, color: Colors.white, size: 30,),
-                ),
-                Text(
-                  'Every 8 hours',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Icon(Icons.timer_rounded, color: Colors.white, size: 30,),
                   ),
-                )
-              ],
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 10),),
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(right: 10),
-                  child: Icon(Icons.medication, color: Colors.white, size: 30,),
-                ),
-                Text(
-                  '2.5 mg',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white
-                  ),
-                )
-              ],
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 15),),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ButtonTheme(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Mark As Taken',
-                      style: TextStyle(fontSize: 18),
+                  Text(
+                    'Every 8 hours',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white
                     ),
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(180, 45)
+                  )
+                ],
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10),),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Icon(Icons.medication, color: Colors.white, size: 30,),
+                  ),
+                  Text(
+                    '2.5 mg',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white
+                    ),
+                  )
+                ],
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 15),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ButtonTheme(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Text(
+                        'Mark As Taken',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(Size(180, 45)
+                        ),
                       ),
                     ),
-                  ),
-                )
-              ],
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 15)),
-            Text(
-              'Metadata',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
+                  )
+                ],
               ),
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-            Text(
-              'Added on 15th June, 2020',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey
+              Padding(padding: EdgeInsets.symmetric(vertical: 15)),
+              Text(
+                'Metadata',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
+                ),
               ),
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Taken',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey
-                  ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+              Text(
+                'Added on 15th June, 2020',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey
                 ),
-                Text(
-                  '10 doses',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Taken',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey
+                    ),
                   ),
-                )
-              ],
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Missed',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey
+                  Text(
+                    '10 doses',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white
+                    ),
+                  )
+                ],
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Missed',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey
+                    ),
                   ),
-                ),
-                Text(
-                  '10 doses',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white
-                  ),
-                )
-              ],
-            ),
-          ],
+                  Text(
+                    '10 doses',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
