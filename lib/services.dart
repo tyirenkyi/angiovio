@@ -47,6 +47,7 @@ class AuthService {
 checkResponse(response) async{
   if(response.statusCode >= 200 && response.statusCode < 300)
     return response;
+
   var msg = response.body;
   throw new HttpException(msg);
 }

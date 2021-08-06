@@ -1,10 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'Settings.dart';
 import 'Dashboard.dart';
+import '../services.dart';
 
 class Home extends StatefulWidget {
   static const routeName = '/home';
@@ -14,7 +15,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int routeIndex = 0;
+  int _routeIndex = 0;
   List<Widget> _routes = [
     Dashboard(),
     Settings(),
@@ -23,7 +24,7 @@ class _HomeState extends State<Home> {
     'TODAY',
     'SETTINGS'
   ];
-  Map<String, dynamic> newDrug = {
+  Map<String, dynamic> _newDrug = {
     'user': '',
     'name': '',
     'dosage': 0,
@@ -32,11 +33,16 @@ class _HomeState extends State<Home> {
     'taken': 0,
     'repeats': 0
   };
-  int interval = 0;
-
+  int _interval = 6;
+  bool _loading = false;
+  final _form = GlobalKey<FormState>();
+  FocusNode _doseFocusNode = FocusNode();
+  FocusNode _dropdownFocusNode = FocusNode();
+  FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  
   void _onTabItemTapped(int index) {
     setState(() {
-      routeIndex = index;
+      _routeIndex = index;
     });
   }
 
@@ -60,6 +66,83 @@ class _HomeState extends State<Home> {
     );
   }
 
+  _saveForm() async {
+    final value = _form.currentState!.validate();
+    if(!value)
+      return false;
+    if(_interval == 0) {
+      _showSnackBar('Please pick an  interval for the drug', Colors.redAccent);
+      return false;
+    }
+    _form.currentState!.save();
+    return true;
+  }
+
+  _showLoadingIndicator(StateSetter setState) {
+    setState(() {
+      _loading = true;
+    });
+  }
+
+  _hideLoadingIndicator(StateSetter setState) {
+    setState(() {
+      _loading = false;
+    });
+  }
+
+  _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: color)
+    );
+  }
+
+  _determineRepeats() {
+    switch(_interval) {
+      case 6:
+        _newDrug['interval'] = _interval;
+        _newDrug['repeats'] = 4;
+        break;
+      case 8:
+        _newDrug['interval'] = _interval;
+        _newDrug['repeats'] = 3;
+        break;
+      case 12:
+        _newDrug['interval'] = _interval;
+        _newDrug['repeats'] = 2;
+        break;
+      case 24:
+        _newDrug['interval'] = _interval;
+        _newDrug['repeats'] = 1;
+        break;
+    }
+  }
+
+  _saveRegistrationToken() async{
+    String? token = await _messaging.getToken();
+    _newDrug['user'] = token;
+  }
+
+  _handleAddDrug(StateSetter setState) async{
+    var formStatus = await _saveForm();
+    if(!formStatus)
+      return;
+    _showLoadingIndicator(setState);
+    _determineRepeats();
+    _saveRegistrationToken();
+    try{
+      print(_newDrug);
+      await addDrug(_newDrug);
+      _hideLoadingIndicator(setState);
+      Navigator.pop(context);
+      _showSnackBar('Your drug has been successfully added', Colors.green);
+    } catch(e) {
+      print(e);
+      _hideLoadingIndicator(setState);
+      Navigator.pop(context);
+      _showSnackBar('An unexpected error occurred. We are unable to add your drug at this time', Colors.redAccent);
+    }
+  }
+
   Widget _buildAddDrugBottomSheet(StateSetter setState) {
     double screenHeight = MediaQuery.of(context).size.height;
     return BackdropFilter(
@@ -71,96 +154,135 @@ class _HomeState extends State<Home> {
         ),
         padding: EdgeInsets.only(left: 20, right: 20, top: 20),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Add A Drug',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(bottom: 15)),
-              TextFormField(
-                style: TextStyle(
-                  color: Colors.white
-                ),
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  labelStyle: TextStyle(
-                    fontSize: 16,
+          child: Form(
+            key: _form,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Add A Drug',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white
                   ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.white
-                    )
-                  )
                 ),
-              ),
-              Padding(padding: EdgeInsets.only(bottom: 15)),
-              TextFormField(
-                style: TextStyle(
-                  color: Colors.white
-                ),
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  labelText: 'Dosage (mg)',
-                  labelStyle: TextStyle(
-                    fontSize: 16,
+                Padding(padding: EdgeInsets.only(bottom: 15)),
+                TextFormField(
+                  style: TextStyle(
                     color: Colors.white
                   ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_doseFocusNode);
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    labelStyle: TextStyle(
+                      fontSize: 16,
                       color: Colors.white
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white
+                      )
                     )
+                  ),
+                  validator: (value) {
+                    if(value!.isEmpty)
+                      return 'Please enter the name of the drug';
+                    return null;
+                  },
+                  onSaved: (value) {
+                    value = value?.trim();
+                    _newDrug['name'] = value;
+                  },
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 15)),
+                TextFormField(
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                  textInputAction: TextInputAction.next,
+                  focusNode: _doseFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Dosage (mg)',
+                    labelStyle: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white
+                      )
+                    )
+                  ),
+                  validator: (value) {
+                    if(value!.isEmpty)
+                      return 'Please enter the dosage';
+                    return null;
+                  },
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_dropdownFocusNode);
+                  },
+                  onSaved: (value) {
+                    value = value?.trim();
+                    _newDrug['dosage'] = value;
+                  },
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 25)),
+                Text('Interval', style: TextStyle(fontSize: 16, color: Colors.white),),
+                DropdownButton<int>(
+                  icon: Icon(Icons.arrow_drop_down),
+                  focusNode: _dropdownFocusNode,
+                  value: _interval,
+                  iconSize: 20,
+                  elevation: 5,
+                  style: TextStyle(color: Colors.white),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.blue,
+                  ),
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      _interval = newValue!;
+                    });
+                  },
+                  items: <int>[6, 8, 12, 24]
+                    .map<DropdownMenuItem<int>>((int value) => (
+                      DropdownMenuItem<int>(
+                        value: value,
+                        child: Text('$value hours', style: TextStyle(color: Colors.grey),)
+                      )
+                  )).toList(),
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 60)),
+                if(_loading)
+                  LinearProgressIndicator()
+                else
+                  ElevatedButton(
+                    onPressed: () {_handleAddDrug(setState);},
+                    child: Text(
+                      'ADD',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(Size(400, 45))
+                    ),
                   )
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(bottom: 25)),
-              Text('Interval', style: TextStyle(fontSize: 16, color: Colors.white),),
-              DropdownButton<int>(
-                icon: Icon(Icons.arrow_drop_down),
-                value: interval,
-                iconSize: 20,
-                elevation: 5,
-                style: TextStyle(color: Colors.white),
-                underline: Container(
-                  height: 2,
-                  color: Colors.blue,
-                ),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    interval = newValue!;
-                  });
-                },
-                items: <int>[0, 6, 8, 12, 24]
-                  .map<DropdownMenuItem<int>>((int value) => (
-                    DropdownMenuItem<int>(
-                      value: value,
-                      child: Text('$value hours', style: TextStyle(color: Colors.grey),)
-                    )
-                )).toList(),
-              ),
-              Padding(padding: EdgeInsets.only(bottom: 60)),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text(
-                  'ADD',
-                  style: TextStyle(fontSize: 18),
-                ),
-                style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(Size(400, 45))
-                ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _doseFocusNode.dispose();
+    _dropdownFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -180,7 +302,7 @@ class _HomeState extends State<Home> {
               ),
               Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
               Text(
-                _routeNames[routeIndex],
+                _routeNames[_routeIndex],
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -192,7 +314,7 @@ class _HomeState extends State<Home> {
         ),
         backgroundColor: Color.fromRGBO(33, 33, 33, 1),
         body: Container(
-          child: _routes[routeIndex],
+          child: _routes[_routeIndex],
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
@@ -213,11 +335,11 @@ class _HomeState extends State<Home> {
               backgroundColor: Color.fromRGBO(25, 25, 25, 1)
             )
           ],
-          currentIndex: routeIndex,
+          currentIndex: _routeIndex,
           selectedItemColor: Colors.white,
           onTap: _onTabItemTapped,
         ),
-        floatingActionButton: routeIndex == 0 ?FloatingActionButton(
+        floatingActionButton: _routeIndex == 0 ?FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: _showAddDrug,
           backgroundColor: Color.fromRGBO(21, 101, 192, 1),

@@ -22,7 +22,7 @@ class DrugProvider with ChangeNotifier {
       _items.clear();
       _items.addAll(drugList.drugs);
       notifyListeners();
-    }catch(e) {
+    } catch(e) {
       print('failed to fetch drugs, $e');
     }
   }
