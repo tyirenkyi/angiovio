@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 //screens
 import 'views/Login.dart';
@@ -30,13 +31,19 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(home: Error());
         }
         if(snapshot.connectionState == ConnectionState.done) {
+          FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+          var homeScreen;
+          if(_firebaseAuth.currentUser != null)
+            homeScreen = Home();
+          else
+            homeScreen = Login();
           return MaterialApp(
             title: 'Angiovio',
             theme: ThemeData(
                 primarySwatch: Colors.blue,
                 accentColor: Colors.black
             ),
-            home: Login(),
+            home: homeScreen,
             routes: {
               SignUp.routeName: (context) => SignUp(),
               Login.routeName: (context) => Login(),
