@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class Drug with ChangeNotifier {
+  final String id;
   final String user;
   final String name;
   final int dosage;
@@ -8,26 +9,31 @@ class Drug with ChangeNotifier {
   final int missed;
   final int taken;
   final int repeats;
+  final String createdOn;
 
   Drug({
+    required this.id,
     required this.user,
     required this.name,
     required this.dosage,
     required this.interval,
     required this.missed,
     required this.taken,
-    required this.repeats
+    required this.repeats,
+    required this.createdOn,
   });
 
   factory Drug.fromJson(Map<String, dynamic> json) {
     return Drug(
-        user: json['user'],
-        name: json['name'],
-        dosage: json['dosage'],
-        interval: json['interval'],
-        missed: json['missed'],
-        taken: json['taken'],
-        repeats: json['repeats']
+      id: json['id'],
+      user: json['userid'],
+      name: json['name'],
+      dosage: json['dosage'],
+      interval: json['interval'],
+      missed: json['missed'],
+      taken: json['taken'],
+      repeats: json['repeats'],
+      createdOn: json['createdon']
     );
   }
 }

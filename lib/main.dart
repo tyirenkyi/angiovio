@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 //screens
 import 'views/Login.dart';
@@ -9,9 +10,18 @@ import 'views/Home.dart';
 import 'views/Error.dart';
 import 'views/Loading.dart';
 
+
+//providers
+import 'providers/drug_provider.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => DrugProvider(),
+      child: MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatefulWidget {

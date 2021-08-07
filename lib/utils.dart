@@ -6,7 +6,6 @@ String determineGreeting() {
   var date = DateTime.now();
   DateFormat dateFormat = DateFormat('H');
   int currentHour = int.parse(dateFormat.format(date));
-  print(currentHour);
   if(currentHour >= 4 && currentHour < 12)
       return 'Good Morning,';
   else if(currentHour >= 12 && currentHour < 16)

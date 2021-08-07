@@ -1,11 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'Settings.dart';
 import 'Dashboard.dart';
 import '../services.dart';
+import '../providers/drug_provider.dart';
+
 
 class Home extends StatefulWidget {
   static const routeName = '/home';
@@ -128,19 +131,20 @@ class _HomeState extends State<Home> {
       return;
     _showLoadingIndicator(setState);
     _determineRepeats();
-    _saveRegistrationToken();
-    try{
-      print(_newDrug);
-      await addDrug(_newDrug);
-      _hideLoadingIndicator(setState);
-      Navigator.pop(context);
-      _showSnackBar('Your drug has been successfully added', Colors.green);
-    } catch(e) {
-      print(e);
-      _hideLoadingIndicator(setState);
-      Navigator.pop(context);
-      _showSnackBar('An unexpected error occurred. We are unable to add your drug at this time', Colors.redAccent);
-    }
+    await _saveRegistrationToken()
+      .then((_) async=> {
+          await addDrug(_newDrug)
+            .then((_) => {
+              _hideLoadingIndicator(setState),
+              Navigator.pop(context),
+              _showSnackBar('Your drug has been successfully added', Colors.green)
+            })
+            .catchError((error) => {
+              _hideLoadingIndicator(setState),
+              Navigator.pop(context),
+              _showSnackBar('An unexpected error occurred. We are unable to add your drug at this time', Colors.redAccent)
+            })
+      });
   }
 
   Widget _buildAddDrugBottomSheet(StateSetter setState) {
@@ -278,6 +282,26 @@ class _HomeState extends State<Home> {
     );
   }
 
+  _fetchDrugs() async{
+    setState(() {
+      _loading = true;
+    });
+    String? token = await _messaging.getToken();
+    await Provider.of<DrugProvider>(context, listen: false).fetchDrugs(user: token!)
+        .then((value) => {
+      setState(() {
+        _loading = false;
+      })
+    });
+  }
+
+
+  @override
+  void initState() {
+    _fetchDrugs();
+    super.initState();
+  }
+
   @override
   void dispose() {
     _doseFocusNode.dispose();
@@ -313,9 +337,7 @@ class _HomeState extends State<Home> {
           ),
         ),
         backgroundColor: Color.fromRGBO(33, 33, 33, 1),
-        body: Container(
-          child: _routes[_routeIndex],
-        ),
+        body: _routes[_routeIndex],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
           unselectedIconTheme: IconThemeData(

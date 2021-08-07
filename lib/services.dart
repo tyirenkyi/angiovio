@@ -56,9 +56,9 @@ decodeJson(response) async{
   return await json.decode(response.body);
 }
 
-Future loadDrugs({required user, required drug}) async {
+Future loadDrugs({required String user}) async {
   try {
-    final response = await http.get(Uri.parse('https://angiovio-server-3wyik.ondigitalocean.app/api/drug/$user/$drug'))
+    final response = await http.get(Uri.parse('https://angiovio-server-3wyik.ondigitalocean.app/api/drugs/$user'))
         .then(checkResponse)
         .then(decodeJson);
     return DrugList.fromJson(response);

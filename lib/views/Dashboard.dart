@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import '../utils.dart';
 import '../widgets/DrugItem.dart';
+import '../providers/drug_provider.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -24,6 +26,7 @@ class _DashboardState extends State<Dashboard> {
       _date = date;
     });
   }
+
 
   @override
   void initState() {
@@ -190,45 +193,52 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.only(top: 10, left: 8, right: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              _date,
-              style: TextStyle(
-                color: Colors.grey
-              ),
+    return Container(
+      padding: EdgeInsets.only(top: 10, left: 8, right: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            _date,
+            style: TextStyle(
+              color: Colors.grey
             ),
-            Padding(padding: EdgeInsets.only(bottom: 5),),
-            Text(
-              _greeting,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
-              ),
+          ),
+          Padding(padding: EdgeInsets.only(bottom: 5),),
+          Text(
+            _greeting,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
             ),
-            Text(
-              '${_firebaseAuth.currentUser?.displayName}',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
-              ),
+          ),
+          Text(
+            '${_firebaseAuth.currentUser?.displayName}',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
             ),
-            Padding(padding: EdgeInsets.only(bottom: 20)),
-            DrugItem(_showDrugDetail),
-            DrugItem(_showDrugDetail),
-            DrugItem(_showDrugDetail),
-            DrugItem(_showDrugDetail),
-            DrugItem(_showDrugDetail),
-            DrugItem(_showDrugDetail)
-          ],
-        ),
+          ),
+          Padding(padding: EdgeInsets.only(bottom: 20)),
+          Expanded(
+            child: Consumer<DrugProvider>(
+              builder: (context, drugProvider, _) {
+                return ListView.builder(
+                    itemCount: drugProvider.items.length,
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return ChangeNotifierProvider.value(
+                        value: drugProvider.items[index],
+                        child: DrugItem(_showDrugDetail),
+                      );
+                    }
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }

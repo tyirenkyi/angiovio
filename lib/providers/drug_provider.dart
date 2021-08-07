@@ -9,16 +9,16 @@ class DrugProvider with ChangeNotifier {
   List<Drug> _items = [];
 
   List<Drug> get items {
-    return [...items];
+    return [..._items];
   }
 
   Drug findByName(String name) {
     return items.firstWhere((element) => element.name == name);
   }
 
-  fetchDrugs({required String user, required String drug}) async{
+  fetchDrugs({required String user}) async{
     try{
-      DrugList drugList = await loadDrugs(user: user, drug: drug);
+      DrugList drugList = await loadDrugs(user: user);
       _items.clear();
       _items.addAll(drugList.drugs);
       notifyListeners();
