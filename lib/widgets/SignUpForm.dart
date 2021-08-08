@@ -101,7 +101,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     Expanded(
                       child: TextFormField(
                         style: TextStyle(
-                          color: Colors.black
+                          color: Colors.white
                         ),
                         textInputAction: TextInputAction.next,
                         focusNode: _nameFocusNode,
@@ -148,7 +148,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     Expanded(
                       child: TextFormField(
                         style: TextStyle(
-                            color: Colors.black
+                            color: Colors.white
                         ),
                         textInputAction: TextInputAction.next,
                         focusNode: _emailFocusNode,
@@ -195,7 +195,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     Expanded(
                       child: TextFormField(
                         style: TextStyle(
-                            color: Colors.black
+                          color: Colors.white
                         ),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
@@ -247,7 +247,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     Expanded(
                       child: TextFormField(
                         style: TextStyle(
-                            color: Colors.black
+                          color: Colors.white
                         ),
                         textInputAction: TextInputAction.next,
                         obscureText: true,
@@ -299,7 +299,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     Expanded(
                       child: TextFormField(
                         style: TextStyle(
-                            color: Colors.black
+                            color: Colors.white
                         ),
                         textInputAction: TextInputAction.next,
                         obscureText: true,

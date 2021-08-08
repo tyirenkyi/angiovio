@@ -98,7 +98,7 @@ class _LoginFormState extends State<LoginForm> {
                     Expanded(
                       child: TextFormField(
                         style: TextStyle(
-                          color: Colors.black
+                          color: Colors.white
                         ),
                         textInputAction: TextInputAction.next,
                         focusNode: _emailFocusNode,
@@ -145,7 +145,7 @@ class _LoginFormState extends State<LoginForm> {
                     Expanded(
                       child: TextFormField(
                         style: TextStyle(
-                          color: Colors.black
+                          color: Colors.white
                         ),
                         obscureText: true,
                         focusNode: _passwordFocusNode,
