@@ -215,6 +215,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           ),
 
                         ),
+                        maxLength: 10,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter your phone';

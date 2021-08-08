@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Settings extends StatelessWidget {
+import 'Login.dart';
+
+class Settings extends StatefulWidget {
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  _signOut() async{
+    await _firebaseAuth.signOut();
+    Navigator.pushReplacementNamed(context, Login.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -13,7 +28,7 @@ class Settings extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Jim Halpert',
+              _firebaseAuth.currentUser!.displayName!,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -22,7 +37,7 @@ class Settings extends StatelessWidget {
             ),
             Padding(padding: EdgeInsets.only(bottom: 10)),
             Text(
-              'jim.halpert@gmail.com',
+              '${_firebaseAuth.currentUser!.email}',
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey
@@ -30,7 +45,7 @@ class Settings extends StatelessWidget {
             ),
             Padding(padding: EdgeInsets.only(bottom: 10)),
             Text(
-              '+233 55 402 3245',
+              '${_firebaseAuth.currentUser!.phoneNumber}',
               style: TextStyle(
                 fontSize: 14,
                   color: Colors.grey
@@ -38,84 +53,23 @@ class Settings extends StatelessWidget {
             ),
             Padding(padding: EdgeInsets.only(bottom: 10)),
             Divider(color: Colors.white, thickness: 1.5,),
-            Padding(padding: EdgeInsets.only(bottom: 20)),
-            Text(
-              'Change Password',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
-              ),
-            ),
-            TextFormField(
-              style: TextStyle(
-                  color: Colors.white
-              ),
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                  labelText: 'Old Password',
-                  labelStyle: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white
-                  ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 1,
-                    color: Colors.white
+            TextButton(
+              child: Row(
+                children: [
+                  Icon(Icons.logout, color: Colors.white,),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 4)),
+                  Text(
+                    'Sign Out',
+                    style: TextStyle(
+                      fontSize: 16
+                    ),
                   )
-                )
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 10)),
-            TextFormField(
-              style: TextStyle(
-                color: Colors.white
-              ),
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                  labelText: 'New Password',
-                  labelStyle: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white
-                  ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.white,
-                    width: 1
-                  )
-                )
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 10)),
-            TextFormField(
-              style: TextStyle(
-                  color: Colors.white
-              ),
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                  labelText: 'Verify New Password',
-                  labelStyle: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white
-                  ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.white,
-                    width: 1
-                  )
-                )
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 40)),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                'SUBMIT',
-                style: TextStyle(fontSize: 18),
+                ],
               ),
               style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(Size(400, 45))
+                padding: MaterialStateProperty.all(EdgeInsets.zero)
               ),
+              onPressed: _signOut,
             )
           ],
         ),
