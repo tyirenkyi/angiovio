@@ -36,7 +36,7 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   margin: EdgeInsets.only(top: 40),
-                  child: Image.asset('assets/images/logo.png'),
+                  child: Image.asset('assets/images/angiovio.png'),
                 ),
                 LoginForm()
               ],
