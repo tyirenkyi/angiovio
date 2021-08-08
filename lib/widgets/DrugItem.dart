@@ -153,7 +153,7 @@ class _DrugItemState extends State<DrugItem> {
     final drug = Provider.of<Drug>(context, listen: false);
     return GestureDetector(
       onTap: () {
-        widget.onTap();
+        widget.onTap(drug);
       },
       child: Container(
         padding: EdgeInsets.only(top: 10, bottom: 20, left: 10, right: 10),

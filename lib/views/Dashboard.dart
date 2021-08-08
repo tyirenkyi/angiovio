@@ -2,10 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:provider/provider.dart';
 
 import '../utils.dart';
 import '../widgets/DrugItem.dart';
+import '../providers/drug.dart';
 import '../providers/drug_provider.dart';
 
 class Dashboard extends StatefulWidget {
@@ -34,7 +36,7 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
   }
 
-  void _showDrugDetail() {
+  void _showDrugDetail(Drug drug) {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -44,12 +46,12 @@ class _DashboardState extends State<Dashboard> {
             )
         ),
         builder: (BuildContext ctx) {
-          return _buildDrugDetailBottomSheet();
+          return _buildDrugDetailBottomSheet(drug);
         }
     );
   }
 
-  Widget _buildDrugDetailBottomSheet() {
+  Widget _buildDrugDetailBottomSheet(Drug drug) {
     double screenHeight = MediaQuery.of(context).size.height;
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
@@ -66,7 +68,7 @@ class _DashboardState extends State<Dashboard> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Text(
-                  'Losartan',
+                  drug.name,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -81,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
                     child: Icon(Icons.timer_rounded, color: Colors.white, size: 30,),
                   ),
                   Text(
-                    'Every 8 hours',
+                    'Every ${drug.interval} hours',
                     style: TextStyle(
                         fontSize: 16,
                         color: Colors.white
@@ -97,7 +99,7 @@ class _DashboardState extends State<Dashboard> {
                     child: Icon(Icons.medication, color: Colors.white, size: 30,),
                   ),
                   Text(
-                    '2.5 mg',
+                    '${drug.dosage} mg',
                     style: TextStyle(
                         fontSize: 16,
                         color: Colors.white
@@ -138,7 +140,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
               Text(
-                'Added on 15th June, 2020',
+                'Added on ${Jiffy(drug.createdOn, 'EEE MMM dd yyyy hh:mm:ss').yMMMMd}',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey
@@ -156,7 +158,7 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                   Text(
-                    '10 doses',
+                    '${drug.taken} dose(s)',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white
@@ -176,7 +178,7 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                   Text(
-                    '10 doses',
+                    '${drug.missed} dose(s)',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white
