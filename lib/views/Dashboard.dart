@@ -20,6 +20,7 @@ class _DashboardState extends State<Dashboard> {
   String _greeting = '';
   String _date = '';
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  bool _taken = false;
 
   void loadGreetingAndDate() {
     String date = getDate();
@@ -39,25 +40,27 @@ class _DashboardState extends State<Dashboard> {
   bool _validateDoseWindow(Drug drug) {
     var now = Jiffy();
     var later = Jiffy().startOf(Units.HOUR).add(hours: drug.nextDose - now.hour);
-    var difference = later.diff(now, Units.HOUR); // difference in hours
-    if(difference > 5) {
+    var difference = later.diff(now, Units.HOUR);
+    print(difference);// difference in hours
+    if(difference > 4) {
       return true;
     }
     return false;
   }
 
   _markAsTaken(Drug drug) async{
-    if(!_validateDoseWindow(drug))
-      return;
     Map<String,String> form = {
       'userId': drug.user,
       'name': drug.name
     };
     await takeDrug(form)
       .then((_) {
+        Provider.of<DrugProvider>(context, listen: false).fetchDrugs(user: drug.user);
+        Navigator.pop(context);
         _showSnackBar('${drug.name} marked as taken', Colors.green);
       })
       .catchError((_) {
+        Navigator.pop(context);
         _showSnackBar('Failed to mark ${drug.name} as taken. Please check your connection and try again', Colors.redAccent);
       });
   }
@@ -164,9 +167,9 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     disabledColor: Colors.grey,
                     child: ElevatedButton(
-                      onPressed: _validateDoseWindow(drug) ? () {
+                      onPressed: () {
                         _markAsTaken(drug);
-                      } : null,
+                      },
                       child: Text(
                         'Mark As Taken',
                         style: TextStyle(fontSize: 18),
@@ -286,11 +289,9 @@ class _DashboardState extends State<Dashboard> {
                     itemBuilder: (BuildContext ctx, int index) {
                       return Dismissible(
                         key: Key(drugProvider.items[index].name),
-                        direction: DismissDirection.horizontal,
+                        direction: DismissDirection.startToEnd,
                         onDismissed: (direction) async{
-                          if(direction == DismissDirection.endToStart) {
-                            await _markAsTaken(drugProvider.items[index]);
-                          } else if(direction == DismissDirection.startToEnd) {
+                          if(direction == DismissDirection.startToEnd) {
                             await _deleteDrug(drugProvider.items[index]);
                           }
                         },

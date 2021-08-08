@@ -39,7 +39,7 @@ class _DrugItemState extends State<DrugItem> {
   }
 
   repeatScenarioFour(Drug drug) {
-    if(Jiffy().hour < 1) {
+    if(Jiffy().hour >= 19) {
       determineHoursToNextDose(1);
       setState(() {
         nextDoseTime = '1:00 am';
