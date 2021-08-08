@@ -10,6 +10,7 @@ class Drug with ChangeNotifier {
   final int taken;
   final int repeats;
   final String createdOn;
+  int nextDose;
 
   Drug({
     required this.id,
@@ -21,6 +22,7 @@ class Drug with ChangeNotifier {
     required this.taken,
     required this.repeats,
     required this.createdOn,
+    this.nextDose = 7,
   });
 
   factory Drug.fromJson(Map<String, dynamic> json) {

@@ -16,6 +16,18 @@ class DrugProvider with ChangeNotifier {
     return items.firstWhere((element) => element.name == name);
   }
 
+  void deleteDrug(String name) {
+    _items.removeWhere((element) => element.name == name);
+    notifyListeners();
+  }
+
+  void setNextDose(String name, int nextDose) {
+    _items.forEach((element) {
+      if(element.name == name)
+        element.nextDose = nextDose;
+    });
+  }
+
   fetchDrugs({required String user}) async{
     try{
       DrugList drugList = await loadDrugs(user: user);

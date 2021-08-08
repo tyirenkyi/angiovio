@@ -1,3 +1,4 @@
+import 'package:angiovio/providers/drug_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:jiffy/jiffy.dart';
@@ -16,107 +17,117 @@ class _DrugItemState extends State<DrugItem> {
   var color = Colors.black;
   String nextDoseTime = '7:00 am';
 
+  updateDrug(String name, int nextDose) {
+    Provider.of<DrugProvider>(context, listen: false).setNextDose(name, nextDose);
+  }
+
   determineNextDoseTime(Drug drug) {
     switch(drug.repeats) {
       case 4:
-        repeatScenarioFour();
+        repeatScenarioFour(drug);
         break;
       case 3:
-        repeatScenarioThree();
+        repeatScenarioThree(drug);
         break;
       case 2:
-        repeatScenarioTwo();
+        repeatScenarioTwo(drug);
         break;
       case 1:
-        repeatScenarioOne();
+        repeatScenarioOne(drug);
         break;
     }
   }
 
-  repeatScenarioFour() {
+  repeatScenarioFour(Drug drug) {
     if(Jiffy().hour < 1) {
       determineHoursToNextDose(1);
       setState(() {
         nextDoseTime = '1:00 am';
       });
+      updateDrug(drug.name, 1);
     } else if(Jiffy().hour < 7) {
       determineHoursToNextDose(7);
       setState(() {
         nextDoseTime = '7:00 am';
       });
+      updateDrug(drug.name, 7);
     } else if(Jiffy().hour < 13) {
       determineHoursToNextDose(13);
       setState(() {
         nextDoseTime = '1:00 pm';
       });
+      updateDrug(drug.name, 13);
     } else if(Jiffy().hour < 19) {
       determineHoursToNextDose(19);
       setState(() {
         nextDoseTime = '7:00 pm';
       });
+      updateDrug(drug.name, 19);
     } else {
       determineHoursToNextDose(7);
       setState(() {
         nextDoseTime = '7:00 am';
       });
+      updateDrug(drug.name, 7);
     }
   }
 
-  repeatScenarioThree() {
+  repeatScenarioThree(Drug drug) {
     if(Jiffy().hour < 7) {
       determineHoursToNextDose(7);
       setState(() {
         nextDoseTime = '7:00 am';
       });
+      updateDrug(drug.name, 7);
     } else if(Jiffy().hour < 15) {
       determineHoursToNextDose(15);
       setState(() {
         nextDoseTime = '3:00 pm';
       });
+      updateDrug(drug.name, 15);
     } else if(Jiffy().hour < 23) {
       determineHoursToNextDose(23);
       setState(() {
         nextDoseTime = '11:00 pm';
       });
+      updateDrug(drug.name, 23);
     } else {
       determineHoursToNextDose(7);
       setState(() {
         nextDoseTime = '7:00 am';
       });
+      updateDrug(drug.name, 7);
     }
   }
 
-  repeatScenarioTwo() {
+  repeatScenarioTwo(Drug drug) {
     if(Jiffy().hour < 7) {
       determineHoursToNextDose(7);
       setState(() {
         nextDoseTime = '7:00 am';
       });
+      updateDrug(drug.name, 7);
     } else if(Jiffy().hour < 19) {
       determineHoursToNextDose(19);
       setState(() {
         nextDoseTime = '7:00 pm';
       });
+      updateDrug(drug.name, 19);
     } else {
       determineHoursToNextDose(7);
       setState(() {
         nextDoseTime = '7:00 am';
       });
+      updateDrug(drug.name, 7);
     }
   }
 
-  repeatScenarioOne() {
-    if(Jiffy().hour < 7) {
-      determineHoursToNextDose(7);
-      setState(() {
-        nextDoseTime = '7:00 am';
-      });
-    } else {
-      setState(() {
-        nextDoseTime = '7:00 am';
-      });
-      determineHoursToNextDose(7);
-    }
+  repeatScenarioOne(Drug drug) {
+    determineHoursToNextDose(7);
+    setState(() {
+      nextDoseTime = '7:00 am';
+    });
+    updateDrug(drug.name, 7);
   }
 
   determineHoursToNextDose(int nextDose) {
@@ -157,7 +168,6 @@ class _DrugItemState extends State<DrugItem> {
       },
       child: Container(
         padding: EdgeInsets.only(top: 10, bottom: 20, left: 10, right: 10),
-        margin: EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.all(Radius.circular(4))

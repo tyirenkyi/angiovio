@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../utils.dart';
 import '../widgets/DrugItem.dart';
+import '../services.dart';
 import '../providers/drug.dart';
 import '../providers/drug_provider.dart';
 
@@ -28,7 +29,53 @@ class _DashboardState extends State<Dashboard> {
       _date = date;
     });
   }
+  
+  _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: color)
+    );
+  }
 
+  bool _validateDoseWindow(Drug drug) {
+    var now = Jiffy();
+    var later = Jiffy().startOf(Units.HOUR).add(hours: drug.nextDose - now.hour);
+    var difference = later.diff(now, Units.HOUR); // difference in hours
+    if(difference > 5) {
+      return true;
+    }
+    return false;
+  }
+
+  _markAsTaken(Drug drug) async{
+    if(!_validateDoseWindow(drug))
+      return;
+    Map<String,String> form = {
+      'userId': drug.user,
+      'name': drug.name
+    };
+    await takeDrug(form)
+      .then((_) {
+        _showSnackBar('${drug.name} marked as taken', Colors.green);
+      })
+      .catchError((_) {
+        _showSnackBar('Failed to mark ${drug.name} as taken. Please check your connection and try again', Colors.redAccent);
+      });
+  }
+
+  _deleteDrug(Drug drug) async {
+    Map<String, String> form = {
+      'userId': drug.user,
+      'name': drug.name
+    };
+    await deleteDrug(form)
+      .then((_){
+        _showSnackBar('Drug deleted', Colors.green);
+        Provider.of<DrugProvider>(context, listen: false).deleteDrug(drug.name);
+      })
+      .catchError((error) {
+        _showSnackBar('Failed to delete ${drug.name}. Please check your connection and try again', Colors.redAccent);
+      });
+  }
 
   @override
   void initState() {
@@ -115,15 +162,17 @@ class _DashboardState extends State<Dashboard> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)
                     ),
+                    disabledColor: Colors.grey,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _validateDoseWindow(drug) ? () {
+                        _markAsTaken(drug);
+                      } : null,
                       child: Text(
                         'Mark As Taken',
                         style: TextStyle(fontSize: 18),
                       ),
                       style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(Size(180, 45)
-                        ),
+                        minimumSize: MaterialStateProperty.all(Size(180, 45)),
                       ),
                     ),
                   )
@@ -228,12 +277,44 @@ class _DashboardState extends State<Dashboard> {
           Expanded(
             child: Consumer<DrugProvider>(
               builder: (context, drugProvider, _) {
-                return ListView.builder(
+                return ListView.separated(
+                    separatorBuilder: (ctx, index) {
+                      return Padding(padding: EdgeInsets.symmetric(vertical: 5));
+                    },
                     itemCount: drugProvider.items.length,
                     itemBuilder: (BuildContext ctx, int index) {
-                      return ChangeNotifierProvider.value(
-                        value: drugProvider.items[index],
-                        child: DrugItem(_showDrugDetail),
+                      return Dismissible(
+                        key: Key(drugProvider.items[index].name),
+                        direction: DismissDirection.horizontal,
+                        onDismissed: (direction) async{
+                          if(direction == DismissDirection.endToStart) {
+                            await _markAsTaken(drugProvider.items[index]);
+                          } else if(direction == DismissDirection.startToEnd) {
+                            await _deleteDrug(drugProvider.items[index]);
+                          }
+                        },
+                        background: Container(
+                          child: Icon(Icons.delete, color: Colors.white, size: 30,),
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            color: Colors.red,
+                          ),
+                        ),
+                        secondaryBackground: Container(
+                          child: Icon(Icons.done, color: Colors.white, size: 30,),
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                          ),
+                        ),
+                        child: ChangeNotifierProvider.value(
+                          value: drugProvider.items[index],
+                          child: DrugItem(_showDrugDetail),
+                        ),
                       );
                     }
                 );
