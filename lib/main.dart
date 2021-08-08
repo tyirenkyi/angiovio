@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
 //screens
@@ -10,12 +12,49 @@ import 'views/Home.dart';
 import 'views/Error.dart';
 import 'views/Loading.dart';
 
-
 //providers
 import 'providers/drug_provider.dart';
 
-void main() {
+Future<void> _messagingBackgroundHandler(RemoteMessage message) async {
+  print(message);
+}
+
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  
+  FirebaseMessaging.onBackgroundMessage(_messagingBackgroundHandler);
+
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel',
+    'High Importance Notifications',
+    'This channel is used for important notifications',
+    importance: Importance.high
+  );
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('ic_stat_logo');
+  final IOSInitializationSettings initializationSettingsIOS =
+  IOSInitializationSettings(
+    requestSoundPermission: false,
+    requestBadgePermission: false,
+    requestAlertPermission: false,
+  );
+  final MacOSInitializationSettings initializationSettingsMacOS =
+  MacOSInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false);
+  final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+      macOS: initializationSettingsMacOS);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => DrugProvider(),
