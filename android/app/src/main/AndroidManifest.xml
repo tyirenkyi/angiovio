@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.angiovio">
    <application
-        android:label="angiovio"
+        android:label="Angiovio"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

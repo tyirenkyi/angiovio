@@ -274,10 +274,11 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           Padding(padding: EdgeInsets.only(bottom: 20)),
-          Expanded(
-            child: Consumer<DrugProvider>(
-              builder: (context, drugProvider, _) {
+          Consumer<DrugProvider>(
+            builder: (context, drugProvider, _) {
+              if(drugProvider.items.length > 0 && !drugProvider.busy)
                 return ListView.separated(
+                  shrinkWrap: true,
                     separatorBuilder: (ctx, index) {
                       return Padding(padding: EdgeInsets.symmetric(vertical: 5));
                     },
@@ -313,13 +314,43 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         child: ChangeNotifierProvider.value(
                           value: drugProvider.items[index],
-                          child: DrugItem(_showDrugDetail),
+                          child: DrugItem(_showDrugDetail, key: UniqueKey()),
                         ),
                       );
                     }
                 );
-              },
-            ),
+              else if(drugProvider.items.length == 0 && !drugProvider.busy)
+                return Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 70),
+                        child: Image.asset('assets/images/empty-list.png'),
+                        width: 180,
+                        height: 180,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
+                        child: Text(
+                          "You haven't added any drugs yet. Hit the button below to start",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              return Center(
+                child: Container(
+                  margin: EdgeInsets.only(top: 100),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
           )
         ],
       ),

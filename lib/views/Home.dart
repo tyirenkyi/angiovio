@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'Settings.dart';
@@ -19,6 +20,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _routeIndex = 0;
+  FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
   List<Widget> _routes = [
     Dashboard(),
     Settings(),
@@ -41,7 +44,7 @@ class _HomeState extends State<Home> {
   final _form = GlobalKey<FormState>();
   FocusNode _doseFocusNode = FocusNode();
   FocusNode _dropdownFocusNode = FocusNode();
-  FirebaseMessaging _messaging = FirebaseMessaging.instance;
+
   
   void _onTabItemTapped(int index) {
     setState(() {
@@ -74,7 +77,7 @@ class _HomeState extends State<Home> {
     if(!value)
       return false;
     if(_interval == 0) {
-      _showSnackBar('Please pick an  interval for the drug', Colors.redAccent);
+      _showSnackBar('Please pick an interval for the drug', Colors.redAccent);
       return false;
     }
     _form.currentState!.save();
@@ -122,7 +125,9 @@ class _HomeState extends State<Home> {
 
   _saveRegistrationToken() async{
     String? token = await _messaging.getToken();
-    _newDrug['user'] = token;
+    String userId = _auth.currentUser!.uid;
+    _newDrug['token'] = token;
+    _newDrug['user'] = userId;
   }
 
   _handleAddDrug(StateSetter setState) async{
@@ -136,6 +141,7 @@ class _HomeState extends State<Home> {
           await addDrug(_newDrug)
             .then((_) => {
               _hideLoadingIndicator(setState),
+              Provider.of<DrugProvider>(context, listen: false).fetchDrugs(user: _newDrug['user']),
               Navigator.pop(context),
               _showSnackBar('Your drug has been successfully added', Colors.green)
             })
@@ -283,16 +289,10 @@ class _HomeState extends State<Home> {
   }
 
   _fetchDrugs() async{
-    setState(() {
-      _loading = true;
-    });
-    String? token = await _messaging.getToken();
-    await Provider.of<DrugProvider>(context, listen: false).fetchDrugs(user: token!)
-        .then((value) => {
-      setState(() {
-        _loading = false;
-      })
-    });
+    await Provider.of<DrugProvider>(context, listen: false).fetchDrugs(user: _auth.currentUser!.uid)
+      .catchError((_) {
+        _showSnackBar('An error occurred. Please check your internet connection.', Colors.redAccent);
+      });
   }
 
 

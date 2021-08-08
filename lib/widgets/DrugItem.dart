@@ -7,7 +7,7 @@ import '../providers/drug.dart';
 
 class DrugItem extends StatefulWidget {
   final onTap;
-  DrugItem(this.onTap);
+  DrugItem(this.onTap, {required Key key}): super(key: key);
 
   @override
   _DrugItemState createState() => _DrugItemState();
@@ -141,9 +141,9 @@ class _DrugItemState extends State<DrugItem> {
     if(difference <= 30)
       setBackgroundColor(Color.fromRGBO(255, 113, 113, 1));
     else if(difference <= 60)
-      setBackgroundColor(Color.fromRGBO(255, 193, 7, 1));
+      setBackgroundColor(Color.fromRGBO(249, 132, 4, 1));
     else if(difference <= 120)
-      setBackgroundColor(Color.fromRGBO(255, 235, 153, 1));
+      setBackgroundColor(Color.fromRGBO(255, 201, 60, 1));
   }
 
   setBackgroundColor(backgroundColor) {

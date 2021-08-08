@@ -4,6 +4,7 @@ class Drug with ChangeNotifier {
   final String id;
   final String user;
   final String name;
+  final String token;
   final int dosage;
   final int interval;
   final int missed;
@@ -16,6 +17,7 @@ class Drug with ChangeNotifier {
     required this.id,
     required this.user,
     required this.name,
+    required this.token,
     required this.dosage,
     required this.interval,
     required this.missed,
@@ -30,6 +32,7 @@ class Drug with ChangeNotifier {
       id: json['id'],
       user: json['userid'],
       name: json['name'],
+      token: json['token'],
       dosage: json['dosage'],
       interval: json['interval'],
       missed: json['missed'],

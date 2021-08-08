@@ -7,6 +7,7 @@ import '../services.dart';
 
 class DrugProvider with ChangeNotifier {
   List<Drug> _items = [];
+  bool busy = true;
 
   List<Drug> get items {
     return [..._items];
@@ -33,8 +34,10 @@ class DrugProvider with ChangeNotifier {
       DrugList drugList = await loadDrugs(user: user);
       _items.clear();
       _items.addAll(drugList.drugs);
+      busy = false;
       notifyListeners();
     } catch(e) {
+      busy = false;
       print('failed to fetch drugs, $e');
     }
   }
