@@ -24,18 +24,17 @@ class _LoginState extends State<Login> {
         backgroundColor: Color.fromRGBO(33, 33, 33, 1),
         body: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.only(top: 80),
+            padding: EdgeInsets.only(top: 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
+                  width: 120,
+                  height: 120,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  margin: EdgeInsets.only(top: 40),
                   child: Image.asset('assets/images/angiovio.png'),
                 ),
                 LoginForm()
