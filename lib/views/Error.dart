@@ -6,12 +6,10 @@ class Error extends StatefulWidget {
 }
 
 class _ErrorState extends State<Error> {
-  final _scaffold = GlobalKey<ScaffoldState>();
-
   showSnackBar() {
-    _scaffold.currentState?.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('An error occurred.'),
+            content: Text('An unexpected error occurred. Please check your connection and try again'),
             backgroundColor: Colors.redAccent,
             duration: Duration(minutes: 1)
         )
@@ -20,13 +18,18 @@ class _ErrorState extends State<Error> {
 
   void initState() {
     super.initState();
-    showSnackBar();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {showSnackBar();});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffold,
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        backgroundColor: Color.fromRGBO(33, 33, 33, 1),
+        elevation: 0,
+      ),
+      backgroundColor: Color.fromRGBO(33, 33, 33, 1),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

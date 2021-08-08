@@ -316,6 +316,7 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
+          brightness: Brightness.dark,
           elevation: 1,
           title: Row(
             children: [

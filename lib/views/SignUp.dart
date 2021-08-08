@@ -15,6 +15,11 @@ class _SignUpState extends State<SignUp> {
     return WillPopScope(
       onWillPop: () async { return Future.value(false); },
       child: Scaffold(
+        appBar: AppBar(
+          brightness: Brightness.dark,
+          backgroundColor: Color.fromRGBO(33, 33, 33, 1),
+          elevation: 0,
+        ),
         backgroundColor: Color.fromRGBO(33, 33, 33, 1),
           body: SingleChildScrollView(
             child: Container(
